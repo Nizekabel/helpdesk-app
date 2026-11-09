@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{{ action }} un ticket - HelpDesk{% endblock %}
+
+{% block content %}
+{% set submitted_data = form_data|default({}) %}
+{% set form_statut = submitted_data.get('statut', ticket.statut if ticket else 'Ouvert') %}
+{% set form_priorite = submitted_data.get('priorite', ticket.priorite if ticket else 'Basse') %}
+
+<section class="ticket-form-page">
+    <div class="mb-4">
+        <span class="badge rounded-pill bg-success-subtle text-success-emphasis px-3 py-2 mb-3">
+            Centre d’assistance
+        </span>
+        <h1 class="display-6 fw-bold mb-2">{{ action }} un ticket</h1>
+        <p class="text-secondary mb-0">
+            {% if ticket %}
+                Modifiez les informations de la demande #{{ ticket.id }}.
+            {% else %}
+                Décrivez votre demande pour la transmettre à l’équipe d’assistance.
+            {% endif %}
+        </p>
+    </div>
+
+    <form class="card ticket-form-card border-0 rounded-4 shadow-sm"
+          method="post"
+          action="{{ url_for('modifier_ticket', ticket_id=ticket.id) if ticket else url_for('creer_ticket') }}">
+        <div class="card-body p-4 p-md-5">
+            <div class="mb-4">
+                <label class="form-label fw-semibold" for="titre">Titre <span class="text-danger">*</span></label>
+                <input class="form-control form-control-lg" id="titre" name="titre" type="text"
+                       value="{{ submitted_data.get('titre', ticket.titre if ticket else '') }}"
+                       maxlength="120" required autofocus>
+                <div class="form-text">Un résumé court du problème ou de la demande.</div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold" for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="5"
+                          maxlength="2000"
+                          placeholder="Ajoutez les informations utiles pour comprendre la demande…">{{ submitted_data.get('description', ticket.description if ticket else '') }}</textarea>
+                <div class="form-text">2 000 caractères maximum.</div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold" for="statut">Statut</label>
+                    <select class="form-select" id="statut" name="statut">
+                        {% for statut in ['Ouvert', 'En cours', 'Fermé'] %}
+                            <option value="{{ statut }}" {% if form_statut == statut %}selected{% endif %}>
+                                {{ statut }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold" for="priorite">Priorité</label>
+                    <select class="form-select" id="priorite" name="priorite">
+                        {% for priorite in ['Basse', 'Moyenne', 'Haute'] %}
+                            <option value="{{ priorite }}" {% if form_priorite == priorite %}selected{% endif %}>
+                                {{ priorite }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-column-reverse flex-sm-row justify-content-end gap-2 p-3 p-md-4">
+            <a class="btn btn-outline-secondary" href="{{ url_for('liste_tickets') }}">Annuler</a>
+            <button class="btn btn-primary" type="submit">{{ action }} le ticket</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

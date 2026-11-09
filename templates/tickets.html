@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Tous les tickets - HelpDesk{% endblock %}
+
+{% block content %}
+<section class="tickets-page">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
+        <div>
+            <span class="badge rounded-pill bg-success-subtle text-success-emphasis px-3 py-2 mb-3">
+                Centre d’assistance
+            </span>
+            <h1 class="display-6 fw-bold mb-2">Vos tickets</h1>
+            <p class="text-secondary mb-0">Retrouvez et filtrez les demandes d’assistance.</p>
+        </div>
+        <div class="d-flex flex-column flex-sm-row gap-2 align-self-md-center">
+            <a href="{{ url_for('accueil') }}" class="btn btn-outline-secondary">
+                <span aria-hidden="true">&larr;</span>
+                Accueil
+            </a>
+            <a href="{{ url_for('nouveau_ticket_form') }}" class="btn btn-primary">
+                <span aria-hidden="true">+</span>
+                Nouveau ticket
+            </a>
+        </div>
+    </div>
+
+{% if tickets %}
+    <div class="ticket-toolbar card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-3 p-md-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-lg-6">
+                    <label class="form-label fw-semibold" for="ticketSearch">Rechercher un ticket</label>
+                    <div class="input-group">
+                        <span class="input-group-text" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <circle cx="10.8" cy="10.8" r="6.8" />
+                                <path d="m16 16 4 4" />
+                            </svg>
+                        </span>
+                        <input class="form-control" id="ticketSearch" type="search"
+                               placeholder="Titre ou description…" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <label class="form-label fw-semibold" for="ticketStatus">Statut</label>
+                    <select class="form-select" id="ticketStatus">
+                        <option value="">Tous les statuts</option>
+                        <option value="ouvert">Ouvert</option>
+                        <option value="en cours">En cours</option>
+                        <option value="fermé">Fermé</option>
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <label class="form-label fw-semibold" for="ticketPriority">Priorité</label>
+                    <select class="form-select" id="ticketPriority">
+                        <option value="">Toutes les priorités</option>
+                        <option value="haute">Haute</option>
+                        <option value="moyenne">Moyenne</option>
+                        <option value="basse">Basse</option>
+                    </select>
+                </div>
+            </div>
+            <p class="ticket-results mb-0 mt-3 small" id="ticketResults" role="status" aria-live="polite"></p>
+        </div>
+    </div>
+
+    <div class="row g-3 g-lg-4" id="ticketList">
+        {% for ticket in tickets %}
+        <div class="col-12 col-md-6 col-xl-4 ticket-item"
+             data-status="{{ ticket.statut|lower }}" data-priority="{{ ticket.priorite|lower }}">
+            <article class="card ticket-card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+                        <span class="ticket-id">Ticket #{{ ticket.id }}</span>
+                        {% if ticket.priorite == "Haute" %}
+                            <span class="badge rounded-pill badge-haute">Priorité haute</span>
+                        {% elif ticket.priorite == "Moyenne" %}
+                            <span class="badge rounded-pill badge-moyenne">Priorité moyenne</span>
+                        {% else %}
+                            <span class="badge rounded-pill badge-basse">Priorité basse</span>
+                        {% endif %}
+                    </div>
+                    <h2 class="h5 ticket-title">{{ ticket.titre }}</h2>
+                    <p class="ticket-description mb-3">{{ ticket.description }}</p>
+                    <button class="btn btn-sm btn-link ticket-details-toggle p-0"
+                            type="button" aria-expanded="false"
+                            aria-controls="ticket-details-{{ ticket.id }}"
+                            data-show-label="Afficher les détails"
+                            data-hide-label="Masquer les détails">
+                        Afficher les détails
+                    </button>
+                    <div class="ticket-details d-none mt-3" id="ticket-details-{{ ticket.id }}">
+                        <span class="small text-secondary">Description complète</span>
+                        <p class="mb-0 mt-1">{{ ticket.description }}</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="small text-secondary">État de la demande</span>
+                        {% if ticket.statut == "Ouvert" %}
+                            <span class="badge rounded-pill status-open">{{ ticket.statut }}</span>
+                        {% elif ticket.statut == "En cours" %}
+                            <span class="badge rounded-pill status-progress">{{ ticket.statut }}</span>
+                        {% else %}
+                            <span class="badge rounded-pill status-closed">{{ ticket.statut }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-sm btn-outline-primary flex-fill"
+                           href="{{ url_for('modifier_ticket_form', ticket_id=ticket.id) }}">
+                            Modifier
+                        </a>
+                        <form class="flex-fill" method="post"
+                              action="{{ url_for('supprimer_ticket', ticket_id=ticket.id) }}"
+                              data-confirm="Voulez-vous vraiment supprimer le ticket « {{ ticket.titre }} » ?">
+                            <button class="btn btn-sm btn-outline-danger w-100" type="submit">
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="ticket-empty-state alert alert-light border rounded-4 text-center py-4 mt-3 d-none"
+         id="ticketEmptyState" role="status">
+        <strong class="d-block mb-1">Aucun ticket trouvé</strong>
+        <span class="text-secondary">Essayez de modifier votre recherche ou vos filtres.</span>
+    </div>
+{% else %}
+    <div class="empty-tickets card border-0 rounded-4 text-center p-4 p-md-5">
+        <div class="card-body">
+            <span class="empty-tickets-icon mb-3" aria-hidden="true">✓</span>
+            <h2 class="h4">Tout est calme pour le moment</h2>
+            <p class="text-secondary mb-0">Aucun ticket n’est à afficher.</p>
+            <a class="btn btn-primary mt-3" href="{{ url_for('nouveau_ticket_form') }}">
+                Créer le premier ticket
+            </a>
+        </div>
+    </div>
+{% endif %}
+</section>
+{% endblock %}

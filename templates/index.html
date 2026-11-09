@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - HelpDesk{% endblock %}
+
+{% block content %}
+<section class="card content-panel border-0 shadow-sm rounded-4">
+    <div class="card-body p-4 p-md-5">
+        <div class="row align-items-center g-4 g-lg-5">
+            <div class="col-lg-7">
+                <span class="badge rounded-pill bg-success-subtle text-success-emphasis px-3 py-2 mb-3">
+                    Votre espace d’assistance
+                </span>
+                <h1 class="display-5 fw-bold mb-3">Bienvenue sur HelpDesk</h1>
+                <p class="lead text-secondary mb-4">
+                    Une façon simple de consulter et de suivre les demandes d’assistance informatique.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-2">
+                    <a class="btn btn-primary btn-lg" href="{{ url_for('liste_tickets') }}">
+                        Consulter les tickets
+                        <span aria-hidden="true">&rarr;</span>
+                    </a>
+                    <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('about') }}">
+                        Découvrir HelpDesk
+                    </a>
+                </div>
+                <a class="btn btn-link mt-3 px-0" href="{{ url_for('nouveau_ticket_form') }}">
+                    Créer une demande d’assistance
+                    <span aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+            <div class="col-lg-5">
+                <div class="welcome-card rounded-4 p-4 p-lg-4">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <span class="welcome-icon rounded-3" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M5 7.5A2.5 2.5 0 0 1 7.5 5h9A2.5 2.5 0 0 1 19 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5 16.5v-9Z" />
+                                <path d="M9 9h6M9 12h6M9 15h3" />
+                            </svg>
+                        </span>
+                        <div>
+                            <h2 class="h5 mb-1">Un suivi plus clair</h2>
+                            <p class="small text-secondary mb-0">Toutes vos demandes, au même endroit.</p>
+                        </div>
+                    </div>
+                    <div class="list-group list-group-flush welcome-list">
+                        <div class="list-group-item d-flex gap-3 align-items-start px-0">
+                            <span class="feature-check" aria-hidden="true">✓</span>
+                            <span>Consultez les demandes d’assistance</span>
+                        </div>
+                        <div class="list-group-item d-flex gap-3 align-items-start px-0">
+                            <span class="feature-check" aria-hidden="true">✓</span>
+                            <span>Suivez leur évolution simplement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

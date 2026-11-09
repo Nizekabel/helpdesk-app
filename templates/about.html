@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}À propos - HelpDesk{% endblock %}
+
+{% block content %}
+<article class="card content-panel border-0 shadow-sm rounded-4">
+    <div class="card-body p-4 p-md-5">
+        <span class="badge rounded-pill bg-success-subtle text-success-emphasis px-3 py-2 mb-3">
+            À propos
+        </span>
+        <h1 class="display-6 fw-bold mb-3">Une assistance mieux organisée</h1>
+        <p class="lead text-secondary mb-4">
+            HelpDesk est une application de gestion des demandes d’assistance informatique, pensée pour faciliter le suivi et la collaboration.
+        </p>
+
+        <h2 class="h4 fw-bold mb-3">Avec HelpDesk, vous pouvez</h2>
+        <div class="list-group feature-list mb-4">
+            <div class="list-group-item d-flex align-items-center gap-3 py-3">
+                <span class="feature-check" aria-hidden="true">✓</span>
+                <span>Créer et centraliser les tickets d’assistance</span>
+            </div>
+            <div class="list-group-item d-flex align-items-center gap-3 py-3">
+                <span class="feature-check" aria-hidden="true">✓</span>
+                <span>Suivre l’évolution de chaque demande</span>
+            </div>
+            <div class="list-group-item d-flex align-items-center gap-3 py-3">
+                <span class="feature-check" aria-hidden="true">✓</span>
+                <span>Faciliter la collaboration au sein de l’équipe</span>
+            </div>
+        </div>
+
+        <a class="btn btn-primary" href="{{ url_for('accueil') }}">
+            <span aria-hidden="true">&larr;</span>
+            Retour à l’accueil
+        </a>
+    </div>
+</article>
+{% endblock %}

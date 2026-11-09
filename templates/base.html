@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10233f">
+    <meta name="description" content="HelpDesk, votre espace de suivi des demandes d'assistance informatique.">
+    <title>{% block title %}HelpDesk{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Aller au contenu</a>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-helpdesk" aria-label="Navigation principale">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('accueil') }}" aria-label="HelpDesk — accueil">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M5 7.5A2.5 2.5 0 0 1 7.5 5h9A2.5 2.5 0 0 1 19 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5 16.5v-9Z" />
+                        <path d="M9 9h6M9 12h6M9 15h3" />
+                    </svg>
+                </span>
+                <span>HelpDesk<small>Centre d’assistance</small></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                    aria-controls="navMenu" aria-expanded="false" aria-label="Ouvrir le menu de navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav nav-pills ms-lg-auto align-items-lg-center gap-lg-2">
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2{% if request.endpoint == 'accueil' %} active{% endif %}"
+                           href="{{ url_for('accueil') }}"
+                           {% if request.endpoint == 'accueil' %}aria-current="page"{% endif %}>Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2{% if request.endpoint in ['liste_tickets', 'nouveau_ticket_form', 'creer_ticket', 'modifier_ticket_form', 'modifier_ticket', 'supprimer_ticket'] %} active{% endif %}"
+                           href="{{ url_for('liste_tickets') }}"
+                           {% if request.endpoint in ['liste_tickets', 'nouveau_ticket_form', 'creer_ticket', 'modifier_ticket_form', 'modifier_ticket', 'supprimer_ticket'] %}aria-current="page"{% endif %}>Tickets</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2{% if request.endpoint == 'about' %} active{% endif %}"
+                           href="{{ url_for('about') }}"
+                           {% if request.endpoint == 'about' %}aria-current="page"{% endif %}>À propos</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container page-shell" id="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages mb-4" aria-live="polite">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Fermer le message"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-helpdesk">
+        <div class="container">
+            <span class="footer-brand">HelpDesk</span>
+            <p class="mb-0">© 2026 · Une assistance claire, un suivi simplifié.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
